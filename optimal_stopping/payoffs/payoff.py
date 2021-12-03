@@ -18,6 +18,23 @@ class MaxPut(Payoff):
     payoff = self.strike - np.max(X, axis=1)
     return payoff.clip(0, None)
 
+##########################################################
+# Added by Tian & Michele
+class MaxCallBarrier(Payoff):
+  def __init__(self, strike):
+    self.strike =  strike
+
+  def __call__(self, X, strike=None):
+    assert strike is None or strike == self.strike
+    return self.eval(X)
+
+  def eval(self, X):
+    # print('payoff.eval ', X, type(X))
+    payoff = (np.max(X, axis=1) <= self.barrier) * (X[:,-1] - self.strike)
+    return payoff.clip(0, None)
+ 
+##########################################################
+
 
 class MaxCall(Payoff):
   def __init__(self, strike):
